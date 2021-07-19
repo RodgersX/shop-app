@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
 
 import 'product.dart';
 
@@ -38,6 +40,29 @@ class Products with ChangeNotifier {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     ),
   ];
+
+  // Future<void> fetchAndSetProducts() async {
+  //   const url = 'https://flutter-update-afd56-default-rtdb.firebaseio.com/';
+  //   try {
+  //     final resp = await http.get(Uri.parse(url));
+  //     print(json.decode(resp.body));
+  //     final extractedData = json.decode(resp.body) as Map<String, dynamic>;
+  //     final List<Product> loadedProducts = [];
+  //     extractedData.forEach((prodId, prodData) {
+  //       loadedProducts.add(Product(
+  //           id: prodId,
+  //           title: prodData['title'],
+  //           description: prodData['description'],
+  //           imageUrl: prodData['imageUrl'],
+  //           price: prodData['price'],
+  //           isfavorite: prodData['isfavorite']));
+  //     });
+  //     _items = loadedProducts;
+  //     notifyListeners();
+  //   } catch (err) {
+  //     throw (err);
+  //   }
+  // }
 
   List<Product> get items {
     return [..._items];

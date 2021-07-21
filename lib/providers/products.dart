@@ -1,6 +1,7 @@
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
 
 import 'product.dart';
 
@@ -41,29 +42,6 @@ class Products with ChangeNotifier {
     ),
   ];
 
-  // Future<void> fetchAndSetProducts() async {
-  //   const url = 'https://flutter-update-afd56-default-rtdb.firebaseio.com/';
-  //   try {
-  //     final resp = await http.get(Uri.parse(url));
-  //     print(json.decode(resp.body));
-  //     final extractedData = json.decode(resp.body) as Map<String, dynamic>;
-  //     final List<Product> loadedProducts = [];
-  //     extractedData.forEach((prodId, prodData) {
-  //       loadedProducts.add(Product(
-  //           id: prodId,
-  //           title: prodData['title'],
-  //           description: prodData['description'],
-  //           imageUrl: prodData['imageUrl'],
-  //           price: prodData['price'],
-  //           isfavorite: prodData['isfavorite']));
-  //     });
-  //     _items = loadedProducts;
-  //     notifyListeners();
-  //   } catch (err) {
-  //     throw (err);
-  //   }
-  // }
-
   List<Product> get items {
     return [..._items];
   }
@@ -76,7 +54,48 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  void addProduct() {
+  Future<void> addProduct(Product prod) async {
+    var url = 'https://flutter-update-afd56-default-rtdb.firebaseio.com';
+
+    try {
+      final resp = await http.post(
+        Uri.https(url, '/product.json'),
+        body: json.encode({
+          'title': prod.title,
+          'description': prod.description,
+          'imageUrl': prod.imageUrl,
+          'price': prod.price,
+          'isfavorite': prod.isfavorite
+        }),
+      );
+
+      final newProduct = Product(
+        description: prod.description,
+        title: prod.title,
+        price: prod.price,
+        imageUrl: prod.imageUrl,
+        id: DateTime.now().toString(),
+      );
+
+      _items.add(newProduct);
+      notifyListeners();
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  void updateProduct(String id, Product newProduct) {
+    final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print('...nothing');
+    }
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 }

@@ -21,7 +21,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   void initState() {
-    _ordersFuture = _obtianOrdersFuture();    
+    _ordersFuture = _obtianOrdersFuture();
     super.initState();
   }
 
@@ -30,28 +30,29 @@ class _OrdersScreenState extends State<OrdersScreen> {
     // final orderData = Provider.of<Orders>(context);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Your Orders'),
-        ),
-        drawer: AppDrawer(),
-        body: FutureBuilder(
-          future:_ordersFuture,
-          builder: (ctx, dataSnapShot) {
-            if (dataSnapShot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+      appBar: AppBar(
+        title: Text('Your Orders'),
+      ),
+      drawer: AppDrawer(),
+      body: FutureBuilder(
+        future: _ordersFuture,
+        builder: (ctx, dataSnapShot) {
+          if (dataSnapShot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            if (dataSnapShot.error != null) {
+              return Text('An error occurred!');
             } else {
-              if (dataSnapShot.error != null) {
-                return Text('An error occurred!');
-              } else {
-                return Consumer<Orders>(
-                  builder: (ctx, orderData, child) => ListView.builder(
-                    itemCount: orderData.itemCount,
-                    itemBuilder: (ctx, i) => OrderItem(orderData.orders[i]),
-                  ),
-                );
-              }
+              return Consumer<Orders>(
+                builder: (ctx, orderData, child) => ListView.builder(
+                  itemCount: orderData.itemCount,
+                  itemBuilder: (ctx, i) => OrderItem(orderData.orders[i]),
+                ),
+              );
             }
-          },
-        ));
+          }
+        },
+      ),
+    );
   }
 }
